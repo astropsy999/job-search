@@ -7,8 +7,10 @@
         >
         <nav class="ml-12 h-full">
           <ul class="flex h-full list-none">
-            <li v-for="menuItem in menuItems" :key="menuItem" class="h-full ml-9 first:ml-0">
-              <a href="" class="flex h-full items-center py-2.5">{{ menuItem }}</a>
+            <li v-for="menuItem in menuItems" :key="menuItem.text" class="h-full ml-9 first:ml-0">
+              <router-link :to="menuItem.url" class="flex h-full items-center py-2.5">{{
+                menuItem.text
+              }}</router-link>
             </li>
           </ul>
         </nav>
@@ -22,9 +24,9 @@
   </header>
 </template>
 <script>
-import ActionButton from '../Shared/ActionButton.vue'
-import ProfileImage from './ProfileImage.vue'
-import TheSubnav from './TheSubnav.vue'
+import ActionButton from '@/components/Shared/ActionButton.vue'
+import ProfileImage from '@/components/Navigation/ProfileImage.vue'
+import TheSubnav from '@/components/Navigation/TheSubnav.vue'
 
 export default {
   name: 'MainNav',
@@ -35,7 +37,14 @@ export default {
   },
   data() {
     return {
-      menuItems: ['Teams', 'Locations', 'Life at Job', 'How We Hire', 'Students', 'Jobs'],
+      menuItems: [
+        { text: 'Teams', url: '/' },
+        { text: 'Locations', url: '/' },
+        { text: 'Life at Job', url: '/' },
+        { text: 'How We Hire', url: '/' },
+        { text: 'Students', url: '/' },
+        { text: 'Jobs', url: '/jobs/results/' }
+      ],
       isLoggedIn: false
     }
   },
