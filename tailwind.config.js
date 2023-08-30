@@ -10,7 +10,7 @@ export default {
         sans: ['OpenSans', ...defaultTheme.fontFamily.sans]
       },
       colors: {
-        'brand-gray-1': '#dadca0',
+        'brand-gray-1': '#dadce0',
         'brand-gray-2': '#f8f9fa',
         'brand-gray-3': '#80868b',
         'brand-blue-1': '#1967d2',
@@ -18,7 +18,8 @@ export default {
         'brand-green-1': '#137333'
       },
       boxShadow: {
-        blue: '0 0 3px 3px #4285f4'
+        blue: '0 0 3px 3px #4285f4',
+        gray: '0 1px 3px 0 rgba(60, 64, 67, .3)'
       }
     }
   },
