@@ -35,5 +35,17 @@ describe('actions', () => {
       store.ADD_SELECTED_ORGANIZATIONS(['Org1', 'Org2'])
       expect(store.selectedOrganizations).toEqual(['Org1', 'Org2'])
     })
+    it('stores job types that the users would like to filter jobs by  ', () => {
+      const store = useUserStore()
+      expect(store.selectedJobTypes).toEqual([])
+    })
+  })
+
+  describe('ADD_SELECTED_JOB_TYPES', () => {
+    it('updates jobtypes the user has choosen to filter jobs by', () => {
+      const store = useUserStore()
+      store.ADD_SELECTED_JOB_TYPES(['type1', 'type2'])
+      expect(store.selectedJobTypes).toEqual(['type1', 'type2'])
+    })
   })
 })
