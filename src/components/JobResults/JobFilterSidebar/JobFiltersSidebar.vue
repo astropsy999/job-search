@@ -8,7 +8,6 @@
         </div>
       </div>
       <job-filter-sidebar-organizations />
-      <collapsible-accordion header="Jobs types"><p>Placeholder for nov</p></collapsible-accordion>
     </section>
   </div>
 </template>

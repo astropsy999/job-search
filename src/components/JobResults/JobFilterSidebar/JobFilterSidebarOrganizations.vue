@@ -3,23 +3,15 @@
     <div class="mt-5">
       <fieldset>
         <ul class="flex flex-row flex-wrap">
-          <li class="h-8 w-1/2">
-            <input id="VueTube" type="checkbox" class="mr-3" /><label for="VueTube">VueTube</label>
-          </li>
-          <li class="h-8 w-1/2">
-            <input id="Between vue" type="checkbox" class="mr-3" /><label for="Between vue"
-              >Between vue</label
-            >
-          </li>
-          <li class="h-8 w-1/2">
-            <input id="Et Vue Brute" type="checkbox" class="mr-3" /><label for="Et Vue Brute"
-              >Et Vue Brute</label
-            >
-          </li>
-          <li class="h-8 w-1/2">
-            <input id="Vue And a Half" type="checkbox" class="mr-3" /><label for="Vue And a Half"
-              >Vue And a Half</label
-            >
+          <li v-for="organization in UNIQUE_ORGANIZATIONS" :key="organization" class="h-8 w-1/2">
+            <input
+              :id="organization"
+              v-model="selectedOrganizations"
+              :value="organization"
+              type="checkbox"
+              class="mr-3"
+              @change="selectOrganization"
+            /><label :for="organization">{{ organization }}</label>
           </li>
         </ul>
       </fieldset>
@@ -28,11 +20,28 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'pinia'
+import { useJobsStore, UNIQUE_ORGANIZATIONS } from '@/stores/jobs'
+import { useUserStore, ADD_SELECTED_ORGANIZATIONS } from '@/stores/user'
 import CollapsibleAccordion from '@/components/Shared/CollapsibleAccordion.vue'
 
 export default {
   name: 'JobFilterSidebarOrganizations',
-  components: { CollapsibleAccordion }
+  components: { CollapsibleAccordion },
+  data() {
+    return {
+      selectedOrganizations: []
+    }
+  },
+  computed: {
+    ...mapState(useJobsStore, [UNIQUE_ORGANIZATIONS])
+  },
+  methods: {
+    ...mapActions(useUserStore, [ADD_SELECTED_ORGANIZATIONS]),
+    selectOrganization() {
+      this.ADD_SELECTED_ORGANIZATIONS(this.selectedOrganizations)
+    }
+  }
 }
 </script>
 
