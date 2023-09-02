@@ -11,8 +11,11 @@ describe('JobFilterSidebarOrganizations', () => {
     const pinia = createTestingPinia()
     const jobsStore = useJobsStore()
     const userStore = useUserStore()
+    const $router = { push: vi.fn() }
+
     render(JobFilterSidebarOrganizations, {
       global: {
+        mocks: { $router },
         plugins: [pinia],
         stubs: {
           FontAwesomeIcon: true
@@ -20,7 +23,7 @@ describe('JobFilterSidebarOrganizations', () => {
       }
     })
 
-    return { jobsStore, userStore }
+    return { jobsStore, userStore, $router }
   }
   it('renders unique list of organizations from jobs', async () => {
     const { jobsStore } = renderJobFilterSidebarOrganizations()
@@ -39,22 +42,42 @@ describe('JobFilterSidebarOrganizations', () => {
     expect(organizations).toEqual(['Google', 'Amazon'])
   })
 
-  it('communicates that user has selected checkbox for organization', async () => {
-    const { jobsStore, userStore } = renderJobFilterSidebarOrganizations()
-    jobsStore.UNIQUE_ORGANIZATIONS = new Set(['Google', 'Amazon'])
+  describe('when user click checkbox', () => {
+    it('communicates that user has selected checkbox for organization', async () => {
+      const { jobsStore, userStore } = renderJobFilterSidebarOrganizations()
+      jobsStore.UNIQUE_ORGANIZATIONS = new Set(['Google', 'Amazon'])
 
-    const button = screen.getByRole('button', {
-      name: /organizations/i
+      const button = screen.getByRole('button', {
+        name: /organizations/i
+      })
+
+      await userEvent.click(button)
+
+      const googleCheckbox = screen.getByRole('checkbox', {
+        name: /google/i
+      })
+
+      await userEvent.click(googleCheckbox)
+
+      expect(userStore.ADD_SELECTED_ORGANIZATIONS).toHaveBeenCalledWith(['Google'])
     })
+    it('navigates user to job results page to see fresh batch of filtered organizations', async () => {
+      const { jobsStore, $router } = renderJobFilterSidebarOrganizations()
+      jobsStore.UNIQUE_ORGANIZATIONS = new Set(['Google', 'Microsoft'])
 
-    await userEvent.click(button)
+      const button = screen.getByRole('button', {
+        name: /organizations/i
+      })
 
-    const googleCheckbox = screen.getByRole('checkbox', {
-      name: /google/i
+      await userEvent.click(button)
+
+      const orgCheckbox = screen.getByRole('checkbox', {
+        name: /google/i
+      })
+
+      await userEvent.click(orgCheckbox)
+
+      expect($router.push).toHaveBeenCalledWith({ name: 'JobResults' })
     })
-
-    await userEvent.click(googleCheckbox)
-
-    expect(userStore.ADD_SELECTED_ORGANIZATIONS).toHaveBeenCalledWith(['Google'])
   })
 })

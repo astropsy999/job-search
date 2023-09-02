@@ -65,65 +65,50 @@ describe('getters', () => {
     })
   })
 
-  describe('FILTERED_JOBS_BY_ORGANIZATIONS', () => {
-    it('identifies jobs that are associated with the given organizations', () => {
-      const jobStore = useJobsStore()
-      jobStore.jobs = [
-        { organization: 'Google' },
-        { organization: 'Amazon' },
-        { organization: 'Microsoft' }
-      ]
-
-      const userStore = useUserStore()
-      userStore.selectedOrganizations = ['Google', 'Microsoft']
-
-      const result = jobStore.FILTERED_JOBS_BY_ORGANIZATIONS
-
-      expect(result).toEqual([{ organization: 'Google' }, { organization: 'Microsoft' }])
-    })
-
-    describe('when the user has not selected any organizations', () => {
-      it('returns all jobs', () => {
-        const jobStore = useJobsStore()
-        jobStore.jobs = [
-          { organization: 'Google' },
-          { organization: 'Amazon' },
-          { organization: 'Microsoft' }
-        ]
-
+  describe('INCLUDE_JOB_BY_ORGANIZATION', () => {
+    describe('when the user has not selected any organization', () => {
+      it('includes job', () => {
         const userStore = useUserStore()
         userStore.selectedOrganizations = []
+        const store = useJobsStore()
+        const job = { organization: 'Google' }
 
-        const result = jobStore.FILTERED_JOBS_BY_ORGANIZATIONS
-
-        expect(result).toEqual(jobStore.jobs)
+        const result = store.INCLUDE_JOB_BY_ORGANIZATION(job)
+        expect(result).toBe(true)
       })
+    })
+
+    it('identifies if job is associated with with given organizations', () => {
+      const userStore = useUserStore()
+      userStore.selectedOrganizations = ['Google', 'Microsoft']
+      const store = useJobsStore()
+      const job = { organization: 'Google' }
+
+      const result = store.INCLUDE_JOB_BY_ORGANIZATION(job)
+      expect(result).toBe(true)
     })
   })
-
-  describe('FILTERED_JOBS_BY_JOB_TYPES', () => {
-    it('identifies jobs that are associated with given job types', () => {
-      const jobStore = useJobsStore()
-      jobStore.jobs = [{ jobType: 'Type1' }, { jobType: 'Type2' }, { jobType: 'Type3' }]
-
-      const userStore = useUserStore()
-      userStore.selectedJobTypes = ['Type1', 'Type2']
-
-      const result = jobStore.FILTERED_JOBS_BY_JOB_TYPES
-
-      expect(result).toEqual([{ jobType: 'Type1' }, { jobType: 'Type2' }])
-    })
-    describe('when the user has not selected any job type', () => {
-      it('returns all jobs', () => {
-        const jobStore = useJobsStore()
-        jobStore.jobs = [{ jobType: 'Type1' }, { jobType: 'Type2' }, { jobType: 'Type3' }]
-
+  describe('INCLUDE_JOB_BY_JOB_TYPE', () => {
+    describe('when the user has not selected any job types', () => {
+      it('includes job', () => {
         const userStore = useUserStore()
         userStore.selectedJobTypes = []
+        const store = useJobsStore()
+        const job = { jobType: 'Full-time' }
 
-        const result = jobStore.FILTERED_JOBS_BY_JOB_TYPES
-        expect(result).toEqual(jobStore.jobs)
+        const result = store.INCLUDE_JOB_BY_JOB_TYPE(job)
+        expect(result).toBe(true)
       })
+    })
+
+    it('identifies if job is associated with with given job types', () => {
+      const userStore = useUserStore()
+      userStore.selectedJobTypes = ['Full-time', 'Part-time']
+      const store = useJobsStore()
+      const job = { jobType: 'Full-time' }
+
+      const result = store.INCLUDE_JOB_BY_JOB_TYPE(job)
+      expect(result).toBe(true)
     })
   })
 })

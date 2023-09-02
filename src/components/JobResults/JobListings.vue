@@ -39,13 +39,7 @@
 
 <script>
 import JobListing from '@/components/JobResults/JobListing.vue'
-import {
-  useJobsStore,
-  FETCH_JOBS,
-  FILTERED_JOBS_BY_ORGANIZATIONS,
-  FILTERED_JOBS_BY_JOB_TYPES,
-  FILTERED_JOBS
-} from '@/stores/jobs.js'
+import { useJobsStore, FETCH_JOBS, FILTERED_JOBS } from '@/stores/jobs.js'
 import { mapActions, mapState } from 'pinia'
 export default {
   name: 'JobListings',
