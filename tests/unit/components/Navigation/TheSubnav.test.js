@@ -2,22 +2,18 @@ import { render, screen } from '@testing-library/vue'
 import { createTestingPinia } from '@pinia/testing'
 
 import { useJobsStore } from '@/stores/jobs'
-
+import { useRoute } from 'vue-router'
+vi.mock('vue-router')
 import TheSubnav from '@/components/Navigation/TheSubnav.vue'
 import { describe } from 'vitest'
 
 describe('TheSubnav', () => {
-  const renderTheSubnav = (routeName) => {
+  const renderTheSubnav = () => {
     const pinia = createTestingPinia()
     const jobsStore = useJobsStore()
     render(TheSubnav, {
       global: {
         plugins: [pinia],
-        mocks: {
-          $route: {
-            name: routeName
-          }
-        },
         stubs: {
           FontAwesomeIcon: true
         }
@@ -28,8 +24,8 @@ describe('TheSubnav', () => {
   }
   describe('when user is on jobs page', () => {
     it('displays job count', async () => {
-      const routeName = 'JobResults'
-      const { jobsStore } = renderTheSubnav(routeName)
+      useRoute.mockReturnValue({ name: 'JobResults' })
+      const { jobsStore } = renderTheSubnav()
 
       const numberOfJobs = 16
 
