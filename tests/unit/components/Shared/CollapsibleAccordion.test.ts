@@ -47,7 +47,7 @@ describe('CollapsibleAccordion', () => {
       const config = { props, slots }
       renderCollapsiblaAccordion(config)
 
-      const button = screen.queryByRole('button', { name: /my category/i })
+      const button = screen.getByRole('button', { name: /my category/i })
       await userEvent.click(button)
       expect(screen.getByText('Whoops! Somebody forgot to populate me')).toBeInTheDocument()
     })
