@@ -37,45 +37,30 @@
   </main>
 </template>
 
-<script>
+<script setup>
 import JobListing from '@/components/JobResults/JobListing.vue'
-import { useJobsStore, FETCH_JOBS, FILTERED_JOBS } from '@/stores/jobs.js'
-import { mapActions, mapState } from 'pinia'
-export default {
-  name: 'JobListings',
-  components: { JobListing },
+import { useJobsStore } from '@/stores/jobs.js'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import usePreviousAndNextPages from '@/composables/usePreviousAndNextPages'
 
-  computed: {
-    currentPage() {
-      return Number.parseInt(this.$route.query.page || '1')
-    },
-    previousPage() {
-      const previousPage = this.currentPage - 1
-      const firstPage = 1
-      return previousPage >= firstPage ? previousPage : undefined
-    },
-    ...mapState(useJobsStore, {
-      FILTERED_JOBS,
-      nextPage() {
-        const nextPage = this.currentPage + 1
-        const maxPage = Math.ceil(this.FILTERED_JOBS.length / 10)
-        return nextPage <= maxPage ? nextPage : undefined
-      },
-      displayedJobs() {
-        const pageNumber = this.currentPage
-        const firstJobIndex = (pageNumber - 1) * 10
-        const lastJobIndex = pageNumber * 10
-        return this.FILTERED_JOBS.slice(firstJobIndex, lastJobIndex)
-      }
-    })
-  },
-  async mounted() {
-    this.FETCH_JOBS()
-  },
-  methods: {
-    ...mapActions(useJobsStore, [FETCH_JOBS])
-  }
-}
+const jobStore = useJobsStore()
+onMounted(jobStore.FETCH_JOBS)
+
+const route = useRoute()
+
+const currentPage = computed(() => Number.parseInt(route.query.page || '1'))
+const FILTERED_JOBS = computed(() => jobStore.FILTERED_JOBS)
+const maxPage = computed(() => Math.ceil(FILTERED_JOBS.value.length / 10))
+
+const { previousPage, nextPage } = usePreviousAndNextPages(currentPage, maxPage)
+
+const displayedJobs = computed(() => {
+  const pageNumber = currentPage.value
+  const firstJobIndex = (pageNumber - 1) * 10
+  const lastJobIndex = pageNumber * 10
+  return FILTERED_JOBS.value.slice(firstJobIndex, lastJobIndex)
+})
 </script>
 
 <style></style>
