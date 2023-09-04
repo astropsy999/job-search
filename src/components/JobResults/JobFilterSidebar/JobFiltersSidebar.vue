@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import ActionButton from '@/components/Shared/ActionButton.vue'
 import JobFilterSidebarCheckboxGroup from '@/components/JobResults/JobFilterSidebar/JobFilterSidebarCheckboxGroup.vue'
 import { useJobsStore } from '@/stores/jobs'
@@ -34,5 +34,3 @@ const UNIQUE_JOB_TYPES = computed(() => jobStore.UNIQUE_JOB_TYPES)
 
 const userStore = useUserStore()
 </script>
-
-<style></style>

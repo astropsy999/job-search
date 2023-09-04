@@ -4,6 +4,9 @@ import { createTestingPinia } from '@pinia/testing'
 import { useJobsStore } from '@/stores/jobs'
 import { useRoute } from 'vue-router'
 vi.mock('vue-router')
+import type { Mock } from 'vitest'
+
+const useRouteMock = useRoute as Mock
 
 import JobListings from '@/components/JobResults/JobListings.vue'
 
@@ -11,6 +14,7 @@ describe('JobListings', () => {
   const renderJobListings = () => {
     const pinia = createTestingPinia()
     const jobsStore = useJobsStore()
+    //@ts-expect-error
     jobsStore.FILTERED_JOBS = Array(15).fill({})
     render(JobListings, {
       global: {
@@ -23,7 +27,7 @@ describe('JobListings', () => {
     return { jobsStore }
   }
   it('fetches jobs', () => {
-    useRoute.mockReturnValue({ query: {} })
+    useRouteMock.mockReturnValue({ query: {} })
 
     const { jobsStore } = renderJobListings()
     expect(jobsStore.FETCH_JOBS).toHaveBeenCalled()
@@ -32,9 +36,10 @@ describe('JobListings', () => {
   it('displays maximum of 10 jobs', async () => {
     const queryParams = { page: '1' }
 
-    useRoute.mockReturnValue({ query: queryParams })
+    useRouteMock.mockReturnValue({ query: queryParams })
 
     const { jobsStore } = renderJobListings()
+    //@ts-expect-error
 
     jobsStore.FILTERED_JOBS = Array(15).fill({})
 
@@ -46,7 +51,7 @@ describe('JobListings', () => {
   describe('when params exclude the page number', () => {
     it('displays page number 1', () => {
       const queryParams = { page: undefined }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       renderJobListings()
 
@@ -57,7 +62,7 @@ describe('JobListings', () => {
   describe('when params include the page number', () => {
     it('displays page number', () => {
       const queryParams = { page: '3' }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       renderJobListings()
 
@@ -69,9 +74,10 @@ describe('JobListings', () => {
     it('it does not show link to previous page', async () => {
       // axios.get.mockResolvedValue({ data: Array(15).fill({}) })
       const queryParams = { page: '1' }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       const { jobsStore } = renderJobListings()
+      //@ts-expect-error
       jobsStore.FILTERED_JOBS = Array(15).fill({})
 
       await screen.findAllByRole('listitem')
@@ -86,9 +92,10 @@ describe('JobListings', () => {
     it('shows link to the next page', async () => {
       // axios.get.mockResolvedValue({ data: Array(15).fill({}) })
       const queryParams = { page: '1' }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       const { jobsStore } = renderJobListings()
+      //@ts-expect-error
       jobsStore.FILTERED_JOBS = Array(15).fill({})
 
       await screen.findAllByRole('listitem')
@@ -104,9 +111,11 @@ describe('JobListings', () => {
     it('it does not show link to next page', async () => {
       // axios.get.mockResolvedValue({ data: Array(15).fill({}) })
       const queryParams = { page: '2' }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       const { jobsStore } = renderJobListings()
+      //@ts-expect-error
+
       jobsStore.FILTERED_JOBS = Array(15).fill({})
 
       await screen.findAllByRole('listitem')
@@ -121,9 +130,11 @@ describe('JobListings', () => {
     it('shows link to the previous page', async () => {
       // axios.get.mockResolvedValue({ data: Array(15).fill({}) })
       const queryParams = { page: '2' }
-      useRoute.mockReturnValue({ query: queryParams })
+      useRouteMock.mockReturnValue({ query: queryParams })
 
       const { jobsStore } = renderJobListings()
+      //@ts-expect-error
+
       jobsStore.FILTERED_JOBS = Array(15).fill({})
 
       await screen.findAllByRole('listitem')

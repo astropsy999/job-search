@@ -4,16 +4,27 @@ import userEvent from '@testing-library/user-event'
 import { useRouter } from 'vue-router'
 vi.mock('vue-router')
 
+import type { Mock } from 'vitest'
+
+const useRouterMock = useRouter as Mock
+
 import JobFilterSidebarCheckboxGroup from '@/components/JobResults/JobFilterSidebar/JobFilterSidebarCheckboxGroup.vue'
 
 describe('JobFilterSidebarCheckboxGroup', () => {
-  const createProps = (props = {}) => ({
+  interface JobFilterSidebarCheckboxGroup {
+    header: string
+    uniqueValues: Set<string>
+    action: Mock
+  }
+  const createProps = (
+    props: Partial<JobFilterSidebarCheckboxGroup> = {}
+  ): JobFilterSidebarCheckboxGroup => ({
     header: 'Some Header',
     uniqueValues: new Set(['Value A', 'Value B']),
     action: vi.fn(),
     ...props
   })
-  const renderJobFilterSidebarCheckboxGroup = (props) => {
+  const renderJobFilterSidebarCheckboxGroup = (props: JobFilterSidebarCheckboxGroup) => {
     const pinia = createTestingPinia()
 
     render(JobFilterSidebarCheckboxGroup, {
@@ -50,7 +61,7 @@ describe('JobFilterSidebarCheckboxGroup', () => {
 
   describe('when user click checkbox', () => {
     it('communicates that user has selected checkbox for value', async () => {
-      useRouter.mockReturnValue({ push: vi.fn() })
+      useRouterMock.mockReturnValue({ push: vi.fn() })
       const action = vi.fn()
       const props = createProps({
         header: 'Job Types',
@@ -76,7 +87,7 @@ describe('JobFilterSidebarCheckboxGroup', () => {
 
     it('navigates user to job results page to see fresh batch of filtered jobs', async () => {
       const push = vi.fn()
-      useRouter.mockReturnValue({ push })
+      useRouterMock.mockReturnValue({ push })
 
       const props = createProps({
         header: 'Job Types',
