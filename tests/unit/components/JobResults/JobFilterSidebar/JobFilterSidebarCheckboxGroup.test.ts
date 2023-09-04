@@ -9,48 +9,39 @@ import type { Mock } from 'vitest'
 const useRouterMock = useRouter as Mock
 
 import JobFilterSidebarCheckboxGroup from '@/components/JobResults/JobFilterSidebar/JobFilterSidebarCheckboxGroup.vue'
-
+import { useUserStore } from '@/stores/user'
 describe('JobFilterSidebarCheckboxGroup', () => {
   interface JobFilterSidebarCheckboxGroup {
-    header: string
     uniqueValues: Set<string>
     action: Mock
   }
   const createProps = (
     props: Partial<JobFilterSidebarCheckboxGroup> = {}
   ): JobFilterSidebarCheckboxGroup => ({
-    header: 'Some Header',
     uniqueValues: new Set(['Value A', 'Value B']),
     action: vi.fn(),
     ...props
   })
   const renderJobFilterSidebarCheckboxGroup = (props: JobFilterSidebarCheckboxGroup) => {
-    const pinia = createTestingPinia()
+    const pinia = createTestingPinia({ stubActions: false })
+    const userStore = useUserStore()
 
     render(JobFilterSidebarCheckboxGroup, {
       props: {
         ...props
       },
       global: {
-        plugins: [pinia],
-        stubs: {
-          FontAwesomeIcon: true
-        }
+        plugins: [pinia]
       }
     })
+
+    return { userStore }
   }
-  it('renders unique list of values ', async () => {
+  it('renders unique list of values ', () => {
     const props = createProps({
-      header: 'Job Types',
       uniqueValues: new Set(['Type1', 'Type2'])
     })
     renderJobFilterSidebarCheckboxGroup(props)
-
-    const button = screen.getByRole('button', {
-      name: /job types/i
-    })
-
-    await userEvent.click(button)
 
     const jobTypesListItems = screen.getAllByRole('listitem')
 
@@ -64,17 +55,10 @@ describe('JobFilterSidebarCheckboxGroup', () => {
       useRouterMock.mockReturnValue({ push: vi.fn() })
       const action = vi.fn()
       const props = createProps({
-        header: 'Job Types',
         uniqueValues: new Set(['Type1', 'Type2']),
         action
       })
       renderJobFilterSidebarCheckboxGroup(props)
-
-      const button = screen.getByRole('button', {
-        name: /job types/i
-      })
-
-      await userEvent.click(button)
 
       const type1Checkbox = screen.getByRole('checkbox', {
         name: /type1/i
@@ -90,17 +74,10 @@ describe('JobFilterSidebarCheckboxGroup', () => {
       useRouterMock.mockReturnValue({ push })
 
       const props = createProps({
-        header: 'Job Types',
         uniqueValues: new Set(['Type1', 'Type2'])
       })
 
       renderJobFilterSidebarCheckboxGroup(props)
-
-      const button = screen.getByRole('button', {
-        name: /job types/i
-      })
-
-      await userEvent.click(button)
 
       const type1Checkbox = screen.getByRole('checkbox', {
         name: /type1/i
@@ -109,6 +86,33 @@ describe('JobFilterSidebarCheckboxGroup', () => {
       await userEvent.click(type1Checkbox)
 
       expect(push).toHaveBeenCalledWith({ name: 'JobResults' })
+    })
+  })
+
+  describe('when user clears job filters', () => {
+    it('unchecks any checked chekboxes', async () => {
+      useRouterMock.mockReturnValue({ push: vi.fn() })
+
+      const props = createProps({
+        uniqueValues: new Set(['Type1', 'Type2'])
+      })
+
+      const { userStore } = renderJobFilterSidebarCheckboxGroup(props)
+
+      const fullTimeCheckboxBeforeAction = screen.getByRole<HTMLInputElement>('checkbox', {
+        name: /type1/i
+      })
+
+      await userEvent.click(fullTimeCheckboxBeforeAction)
+      expect(fullTimeCheckboxBeforeAction.checked).toBe(true)
+
+      userStore.CLEAR_USER_JOB_FILTER_SELECTIONS()
+
+      const fullTimeCheckboxAfterAction = await screen.findByRole<HTMLInputElement>('checkbox', {
+        name: /type1/i
+      })
+
+      expect(fullTimeCheckboxAfterAction.checked).toBe(false)
     })
   })
 })

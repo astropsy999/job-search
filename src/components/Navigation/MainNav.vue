@@ -16,7 +16,7 @@
         </nav>
         <div class="flex ml-auto items-center h-full">
           <ProfileImage v-if="isLoggedIn" />
-          <ActionButton v-else text="Sign In" @click="loginUser" />
+          <ActionButton v-else text="Sign In" @click="LOGIN_USER" />
         </div>
       </div>
       <the-subnav v-if="isLoggedIn" />
@@ -47,5 +47,5 @@ const headerHeightClass = computed(() => {
   }
 })
 
-const loginUser = userStore.loginUser
+const LOGIN_USER = userStore.LOGIN_USER
 </script>
