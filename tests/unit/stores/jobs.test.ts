@@ -118,4 +118,27 @@ describe('getters', () => {
       expect(result).toBe(true)
     })
   })
+  describe('INCLUDE_JOB_BY_DEGREES', () => {
+    describe('when the user has not selected any degrees', () => {
+      it('includes job', () => {
+        const userStore = useUserStore()
+        userStore.selectedDergees = []
+        const store = useJobsStore()
+        const job = createJob({})
+
+        const result = store.INCLUDE_JOB_BY_DEGREE(job)
+        expect(result).toBe(true)
+      })
+    })
+
+    it('identifies if job is associated with with given degrees', () => {
+      const userStore = useUserStore()
+      userStore.selectedJDegrees = ["Master's"]
+      const store = useJobsStore()
+      const job = createJob({ degree: "Master's" })
+
+      const result = store.INCLUDE_JOB_BY_DEGREE(job)
+      expect(result).toBe(true)
+    })
+  })
 })

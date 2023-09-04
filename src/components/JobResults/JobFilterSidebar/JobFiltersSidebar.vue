@@ -17,6 +17,11 @@
         :unique-values="UNIQUE_ORGANIZATIONS"
         :action="userStore.ADD_SELECTED_ORGANIZATIONS"
       />
+      <job-filter-sidebar-checkbox-group
+        header="Degrees"
+        :unique-values="UNIQUE_DEGREES"
+        :action="userStore.ADD_SELECTED_DEGREES"
+      />
     </section>
   </div>
 </template>
@@ -26,11 +31,13 @@ import ActionButton from '@/components/Shared/ActionButton.vue'
 import JobFilterSidebarCheckboxGroup from '@/components/JobResults/JobFilterSidebar/JobFilterSidebarCheckboxGroup.vue'
 import { useJobsStore } from '@/stores/jobs'
 import { useUserStore } from '@/stores/user'
+import { useDegreesStore } from '@/stores/degrees'
 import { computed } from 'vue'
 const jobStore = useJobsStore()
+const userStore = useUserStore()
+const degreesStore = useDegreesStore()
 
 const UNIQUE_ORGANIZATIONS = computed(() => jobStore.UNIQUE_ORGANIZATIONS)
 const UNIQUE_JOB_TYPES = computed(() => jobStore.UNIQUE_JOB_TYPES)
-
-const userStore = useUserStore()
+const UNIQUE_DEGREES = computed(() => degreesStore.UNIQUE_DEGREES)
 </script>

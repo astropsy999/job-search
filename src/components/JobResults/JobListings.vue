@@ -40,12 +40,15 @@
 <script lang="ts" setup>
 import JobListing from '@/components/JobResults/JobListing.vue'
 import { useJobsStore } from '@/stores/jobs'
+import { useDegreesStore } from '@/stores/degrees'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import usePreviousAndNextPages from '@/composables/usePreviousAndNextPages'
 
 const jobStore = useJobsStore()
 onMounted(jobStore.FETCH_JOBS)
+const degreesStore = useDegreesStore()
+onMounted(degreesStore.FETCH_DEGREES)
 
 const route = useRoute()
 
