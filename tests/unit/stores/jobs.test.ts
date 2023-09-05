@@ -122,7 +122,7 @@ describe('getters', () => {
     describe('when the user has not selected any degrees', () => {
       it('includes job', () => {
         const userStore = useUserStore()
-        userStore.selectedDergees = []
+        userStore.selectedDegrees = []
         const store = useJobsStore()
         const job = createJob({})
 
@@ -133,12 +133,45 @@ describe('getters', () => {
 
     it('identifies if job is associated with with given degrees', () => {
       const userStore = useUserStore()
-      userStore.selectedJDegrees = ["Master's"]
+      userStore.selectedDegrees = ["Master's"]
       const store = useJobsStore()
       const job = createJob({ degree: "Master's" })
 
       const result = store.INCLUDE_JOB_BY_DEGREE(job)
       expect(result).toBe(true)
+    })
+  })
+
+  describe('INCLUDE_JOB_BY_SKILL', () => {
+    it('identifies if job matches user skill', () => {
+      const userStore = useUserStore()
+      userStore.skillSearchTerm = 'Vue'
+      const store = useJobsStore()
+      const job = createJob({ title: 'Vue Developer' })
+
+      const result = store.INCLUDE_JOB_BY_SKILL(job)
+      expect(result).toBe(true)
+    })
+    it('handles inconsistent character casing', () => {
+      const userStore = useUserStore()
+      userStore.skillSearchTerm = 'vuE'
+      const store = useJobsStore()
+      const job = createJob({ title: 'Vue Developer' })
+
+      const result = store.INCLUDE_JOB_BY_SKILL(job)
+      expect(result).toBe(true)
+    })
+
+    describe('describe when the user has not entered any skill', () => {
+      it('includes job', () => {
+        const userStore = useUserStore()
+        userStore.skillSearchTerm = ''
+        const store = useJobsStore()
+        const job = createJob({ title: 'Vue Developer' })
+
+        const result = store.INCLUDE_JOB_BY_SKILL(job)
+        expect(result).toBe(true)
+      })
     })
   })
 })
